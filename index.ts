@@ -1,6 +1,16 @@
 import fs from "fs";
 import { read, utils } from "xlsx";
 
+function checkKorean(str: string) {
+  for (let i = 0; i < str.length; i++) {
+    if (str[i].charCodeAt(0) > 55215) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
 function main(name: string) {
   const file = fs.readFileSync(`./sheets/${name}.xls`);
   const wb = read(file, { type: "buffer" });
@@ -18,7 +28,7 @@ function main(name: string) {
       if (item["어휘"].length >= 4) return undefined;
       if (item["품사"] !== "명사") return undefined;
       if (item["어휘"].includes("-")) return undefined;
-      if (item["어휘"].includes("")) return undefined;
+      if (!checkKorean(item["어휘"])) return undefined;
       return item;
     })
     .filter((i) => i !== undefined)
@@ -35,4 +45,4 @@ function main(name: string) {
   stream.end();
 }
 
-main("830239_850000");
+main("830239_1050000");
