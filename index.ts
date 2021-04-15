@@ -18,6 +18,7 @@ function main(name: string) {
       if (item["어휘"].length >= 4) return undefined;
       if (item["품사"] !== "명사") return undefined;
       if (item["어휘"].includes("-")) return undefined;
+      if (item["어휘"].includes("")) return undefined;
       return item;
     })
     .filter((i) => i !== undefined)
@@ -34,4 +35,4 @@ function main(name: string) {
   stream.end();
 }
 
-main("830239_350000");
+main("830239_850000");
