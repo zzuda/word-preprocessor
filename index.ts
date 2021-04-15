@@ -25,7 +25,13 @@ function main(name: string) {
   const uniqueWord = new Set(filteredWord);
   const words = [...uniqueWord];
 
-  fs.writeFileSync(`./dist/${name}.txt`, JSON.stringify(words));
+  if (!fs.existsSync("./dist")) {
+    fs.mkdirSync("./dist");
+  }
+  const stream = fs.createWriteStream(`./dist/${name}.txt`);
+  const content = JSON.stringify(words).replace("]", "").replace("[", "");
+  stream.write(content);
+  stream.end();
 }
 
 main("830239_350000");
