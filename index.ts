@@ -1,5 +1,5 @@
 import fs from "fs";
-import { read, utils } from "xlsx";
+import { read, utils, WorkBook } from "xlsx";
 
 const WORD_COLUNM = "표제어";
 const WORD_PARTS = "품사";
@@ -19,7 +19,7 @@ function getFileNameByArgs(): string {
   return myArgs[0];
 }
 
-function readSheet(name: string): Promise<Buffer> {
+function readSheet(name: string): Promise<WorkBook> {
   const buffers: Buffer[] = [];
   const readStream = fs.createReadStream(name);
   return new Promise((resolve, reject) => {
@@ -29,14 +29,14 @@ function readSheet(name: string): Promise<Buffer> {
 
     readStream.on("end", () => {
       const buffer = Buffer.concat(buffers);
-      resolve(buffer);
+      const wb = read(buffer, { type: "buffer" });
+      resolve(wb);
     });
   });
 }
 
 async function main() {
-  const file = await readSheet(getFileNameByArgs());
-  const wb = read(file, { type: "buffer" });
+  const wb = await readSheet(getFileNameByArgs());
   const firstSheet = wb.SheetNames[0];
   const sheet = wb.Sheets[firstSheet];
   const sheetJson = utils.sheet_to_json(sheet, {
